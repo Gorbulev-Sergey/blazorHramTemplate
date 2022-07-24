@@ -1,0 +1,73 @@
+﻿@layout CPanelLayout
+@page "/cpanel/photos"
+@using blazorHramTemplate2.Areas.ControlPanel.Pages.Photos.Photo
+@attribute [Authorize(Roles = "администратор, редактор")]
+@inject PhotosService PhotosService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+<h3 class="mb-3 text-dark">Фотографии</h3>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-xl-2">
+    @foreach (var album in albums)
+    {
+        <Album album="album">
+            <Navigation>
+                <button class="btn btn-light mr-1" @onclick="() => показать(album)"><i class="far fa-eye"></i></button>
+                <button class="btn btn-light mr-1" @onclick="() => изменить(album)"><i class="fas fa-pencil-alt"></i></button>
+                <div class="btn-group dropright">
+                    <button class="btn btn-light rounded" data-toggle="dropdown"><i class="fas text-danger fa-trash-alt"></i></button>
+                    <div class="dropdown-menu">
+                        <div class="ml-2 mr-2">
+                            <h6 class="text-danger text-center">Удалить этот фотоальбом?</h6>
+                            <div class="d-flex justify-content-center">
+                                <button class="btn btn-sm btn-danger text-dark mr-1" @onclick="() => удалить(album)">Удалить</button>
+                                <button class="btn btn-sm btn-light text-dark">Отмена</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Navigation>
+        </Album>
+    }
+</div>
+
+
+<Modal_album album="selectedAlbum" скрыть_окно="()=>скрыть()"></Modal_album>
+<Modal_remove_album album="selectedAlbum" удалить_фотоальбом="()=>удалить(selectedAlbum)"></Modal_remove_album>
+
+
+@code {
+    public List<imageAlbum> albums = new List<imageAlbum>();
+    imageAlbum selectedAlbum = new imageAlbum();
+
+    protected override async Task OnInitializedAsync()
+    {
+        albums = PhotosService.get().OrderBy(a => a.created).Reverse().ToList();
+    }
+
+    async Task показать(imageAlbum album)
+    {
+        selectedAlbum = new imageAlbum();
+        await JSRuntime.InvokeAsync<string>("Hidden_album", "modal_album");
+        selectedAlbum = album;
+        await JSRuntime.InvokeAsync<string>("Show_album", "modal_album");
+    }
+
+    async Task скрыть()
+    {
+        selectedAlbum = new imageAlbum();
+        await JSRuntime.InvokeAsync<string>("Hidden_album", "modal_album");
+    }
+
+    void изменить(imageAlbum album)
+    {
+        NavigationManager.NavigateTo($"/cpanel/photos/edit/{album.ID}", true);
+    }
+
+    async Task удалить(imageAlbum album)
+    {
+        await PhotosService.deleteAsync(album);
+        albums.Remove(album);
+    }
+}

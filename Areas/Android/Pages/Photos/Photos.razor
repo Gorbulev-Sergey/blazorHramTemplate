@@ -1,0 +1,24 @@
+﻿@layout blazorHramTemplate2.Pages.Shared.AndroidLayout
+@page "/android/photos"
+@inject PhotosService PhotosService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Фотографии</PageTitle>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-xl-2">
+    @foreach (var album in albums.OrderByDescending(d => d.created))
+    {
+        <Album album="album" onclick='()=>NavigationManager.NavigateTo($"/photos/details/{album.ID}?backurl=/android/photos")'></Album>
+    }
+</div>
+
+
+@code {
+    public List<imageAlbum> albums = new List<imageAlbum>();
+    imageAlbum selectedAlbum = new imageAlbum();
+
+    protected override async Task OnInitializedAsync()
+    {
+        albums = await PhotosService.getAsync();
+    }
+}

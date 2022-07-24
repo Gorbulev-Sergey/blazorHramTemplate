@@ -1,0 +1,98 @@
+﻿@layout CPanelLayout
+@page "/cpanel"
+@page "/cpanel/posts"
+@attribute [Authorize(Roles = "администратор, редактор")]
+@inject PostsService PostsService
+@inject TagsService TagsService
+@inject IJSRuntime JSRuntime
+@using blazorHramTemplate2.Areas.ControlPanel.Pages.Posts.Post
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+
+<h3 class="mb-3 text-dark">Публикации</h3>
+
+
+<SortedTabs tags="tags" filterChanged="filter => фильтровать((Filter)filter)"></SortedTabs>
+
+
+<Virtualize Items="filtredPosts" Context="post">
+    <blazorHramTemplate2.Areas.ControlPanel.Pages.Posts.Post.Post post="post" удалить="удалить" обновить="post => обновить((post)post)"></blazorHramTemplate2.Areas.ControlPanel.Pages.Posts.Post.Post>
+</Virtualize>    
+
+
+@*@foreach (var post in filtredPosts)
+{
+    <blazorHramTemplate2.Areas.ControlPanel.Pages.Posts.Post.Post post="post" удалить="удалить" обновить="post => обновить((post)post)"></blazorHramTemplate2.Areas.ControlPanel.Pages.Posts.Post.Post>
+}*@
+
+
+
+@code {
+    List<post> posts { get; set; } = new List<post>();
+    List<post> filtredPosts { get; set; } = new List<post>();
+    List<tag> tags { get; set; } = new List<tag>();
+
+    Filter Filter = new Filter();
+
+    protected override void OnInitialized()
+    {
+        posts = PostsService.get().OrderBy(p => p.created).Reverse().ToList();
+        filtredPosts = posts;
+        tags = TagsService.tags();
+    }
+
+    void удалить(post post)
+    {
+        PostsService.delete(post);
+        filtredPosts.Remove(post);
+    }
+
+    void обновить(post post)
+    {
+        PostsService.update(post);
+        фильтровать(Filter);
+    }
+
+    void фильтровать(Filter filter)
+    {
+        Filter = filter;
+        filtredPosts = posts;
+
+        //Первый фильтр
+        if (Filter.filter1.ToString() != "все")
+        {
+            switch (Filter.filter1.ToString())
+            {
+                case "опубликованые": filtredPosts = posts.Where(p => p.published == true).ToList(); break;
+                case "неопубликованые": filtredPosts = posts.Where(p => p.published == false).ToList(); break;
+            }
+
+        }
+
+        // Второй фильтр
+        if (Filter.filter2.ToString() != "все")
+        {
+            switch (Filter.filter2.ToString())
+            {
+                case "объявление": filtredPosts = filtredPosts.Where(p => p.type == type.объявление).ToList(); break;
+                case "новость": filtredPosts = filtredPosts.Where(p => p.type == type.новость).ToList(); break;
+                case "статья": filtredPosts = filtredPosts.Where(p => p.type == type.статья).ToList(); break;
+                case "видео": filtredPosts = filtredPosts.Where(p => p.type == type.видео).ToList(); break;
+            }
+        }
+
+        // Третий фильр
+        if (Filter.filter3.ToString() == "старые")
+        {
+            filtredPosts = filtredPosts.OrderBy(p => p.created.ToShortDateString()).Reverse().ToList();
+        }
+
+        // Четвёртый фильтр
+        if (!String.IsNullOrEmpty(Filter.filter4))
+        {
+            if (Filter.filter4!="все")
+            {
+                filtredPosts = filtredPosts.Where(p => p.tags.Where(t => t.name == Filter.filter4).Count() > 0).ToList();
+            }
+        }
+    }
+}

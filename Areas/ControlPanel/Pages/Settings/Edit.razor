@@ -1,0 +1,50 @@
+﻿@layout CPanelLayout
+@page "/cpanel/settings/edit"
+@attribute [Authorize(Roles = "администратор")]
+@inject AppSettingsService AppSettingsService
+
+    <h3 class="mb-3 text-dark">Изменить настройки</h3>
+
+
+    <div class="mb-3">
+        <label class="text-dark">Название сайта:</label>
+        <input class="form-control bg-light text-dark border-0 h-auto" @bind="@appsettings.SiteSettings.site_name" />
+    </div>
+    <div class="mb-3">
+        <label class="text-dark">Описание сайта:</label>
+        <input class="form-control bg-light text-dark border-0 h-auto" @bind="@appsettings.SiteSettings.site_description" />
+    </div>
+    <div class="mb-3">
+        <label class="text-dark">Подвал сайта:</label>
+        <input class="form-control bg-light text-dark border-0 h-auto" @bind="@appsettings.SiteSettings.site_footer" />
+    </div>
+    <div class="mb-3">
+        <label class="text-dark">Строка подключения:</label>
+        <input class="form-control bg-light text-dark border-0 h-auto" @bind="@connection_string" />
+    </div>
+    <div class="mb-3">
+        <button class="btn btn-success text-dark" @onclick="()=> AppSettingsService.settings=appsettings">Сохранить изменения</button>
+        <a class="btn btn-secondary text-dark" href="cpanel/settings">Отмена</a>
+    </div>
+
+
+
+
+    @code {
+        appsettings appsettings { get; set; }
+        protected override void OnInitialized()
+        {
+            appsettings = AppSettingsService.settings;
+        }
+        string connection_string
+        {
+            get
+            {
+                return appsettings.ConnectionStrings.FirstOrDefault().Value;
+            }
+            set
+            {
+                appsettings.ConnectionStrings[appsettings.ConnectionStrings.FirstOrDefault().Key] = value;
+            }
+        }
+    }

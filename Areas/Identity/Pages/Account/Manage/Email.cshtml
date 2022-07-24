@@ -1,0 +1,43 @@
+﻿@page
+@model EmailModel
+@{
+    ViewData["Title"] = "Эл. почта";
+    ViewData["ActivePage"] = ManageNavPages.Email;
+}
+
+<h4 class="text-dark">@ViewData["Title"]</h4>
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+<div class="row text-dark">
+    <div class="col-md-6">
+        <form id="email-form" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                @if (Model.IsEmailConfirmed)
+                {
+                    <div class="input-group">
+                        <input asp-for="Email" class="form-control border-0 bg-dark text-light" disabled />
+                        <div class="input-group-append">
+                            <span class="input-group-text bg-tertiary text-success font-weight-bold">✓</span>
+                        </div>
+                    </div>
+                }
+                 else
+                {
+                    <input asp-for="Email" class="form-control border-0 bg-dark text-light" disabled />
+                    @*<button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">Отправить письмо с подтверждением</button>*@
+                }
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.NewEmail"></label>
+                <input asp-for="Input.NewEmail" class="form-control border-0 bg-dark text-light" />
+                <span asp-validation-for="Input.NewEmail" class="text-danger"></span>
+            </div>
+            <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="btn btn-tertiary text-dark">Обновить</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

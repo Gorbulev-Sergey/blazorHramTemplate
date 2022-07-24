@@ -1,0 +1,78 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <UserSecretsId>aspnet-blazorHramTemplate2-10F34D90-FC26-4E7F-9BF6-F8D9527C1BC9</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="Areas\Android\Pages\Contacts\Contacts.razor" />
+    <None Include="Areas\Android\Pages\Photos\Album.razor" />
+    <None Include="Areas\Android\Pages\Photos\Photos.razor" />
+    <None Include="Areas\Android\Pages\Posts\Posts.razor" />
+    <None Include="Areas\Android\Pages\Posts\Post\Details.razor" />
+    <None Include="Areas\Android\Pages\Posts\Post\Post.razor" />
+    <None Include="Areas\Android\Pages\Schedule\ScheduleNow.razor" />
+    <None Include="Pages\Contacts\Contacts.razor" />
+    <None Include="Pages\Photos\Photos.razor" />
+    <None Include="Pages\Photos\Photo\Album.razor" />
+    <None Include="Pages\Photos\Photo\AlbumDetails.razor" />
+    <None Include="Pages\Photos\Photo\Modal_album.razor" />
+    <None Include="Pages\Photos\Photo\Photo.razor" />
+    <None Include="Pages\Posts\Posts.razor" />
+    <None Include="Pages\Posts\Post\Comment\Comment.razor" />
+    <None Include="Pages\Posts\Post\Comment\Comments.razor" />
+    <None Include="Pages\Posts\Post\Comment\CreateComment.razor" />
+    <None Include="Pages\Posts\Post\Details.razor" />
+    <None Include="Pages\Posts\Post\Post.razor" />
+    <None Include="Pages\Posts\Post\TagNavigation.razor" />
+    <None Include="Pages\Schedule\ScheduleNow.razor" />
+    <None Include="Pages\Schedule\Schedule\Schedule.razor" />
+    <None Include="Pages\Schedule\Schedule\Schedule_string.razor" />
+    <None Include="Pages\Shared\AndroidLayout.razor" />
+    <None Include="Pages\Shared\DefaultLayout.razor" />
+    <None Include="Pages\Shared\ErrorLayout.razor" />
+    <None Include="Pages\Shared\HomeLayout.razor" />
+    <None Include="Pages\Shared\Login.razor" />
+    <None Include="Pages\Shared\_Host.cshtml" />
+    <None Include="Pages\Shared\_IdentityLayout.cshtml" />
+    <None Include="Pages\Shared\_LoginPartial.cshtml" />
+    <None Include="Pages\Shared\_ValidationScriptsPartial.cshtml" />
+    <None Include="Pages\_Imports.razor" />
+    <None Include="Pages\_ViewImports.cshtml" />
+    <None Include="Pages\_ViewStart.cshtml" />
+    <None Include="wwwroot\bootstrap\css\bootstrap-grid.css.map" />
+    <None Include="wwwroot\bootstrap\css\bootstrap-grid.min.css.map" />
+    <None Include="wwwroot\bootstrap\css\bootstrap-reboot.css.map" />
+    <None Include="wwwroot\bootstrap\css\bootstrap-reboot.min.css.map" />
+    <None Include="wwwroot\my_css\style.css" />
+    <None Include="wwwroot\my_js\changeBootstrap.js" />
+    <None Include="wwwroot\my_js\editor.js" />
+    <None Include="wwwroot\my_js\fullScreen.js" />
+    <None Include="wwwroot\my_js\loadBootstrap.js" />
+    <None Include="wwwroot\my_js\localStorage.js" />
+    <None Include="wwwroot\my_js\modal_album.js" />
+    <None Include="wwwroot\my_js\remove_somee.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AspNet.Security.OAuth.Vkontakte" Version="6.0.6" />
+    <PackageReference Include="MailKit" Version="3.2.0" />
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.5" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.5" />
+  </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+
+</Project>

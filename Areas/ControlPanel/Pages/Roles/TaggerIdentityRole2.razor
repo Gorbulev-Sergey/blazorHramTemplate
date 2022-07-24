@@ -1,0 +1,73 @@
+﻿<div class="d-inline-block">
+    <div class="d-flex align-items-center">
+        <button class="btn btn-light btn-sm text-dark mr-2" @onclick="()=>toggleForm()"><i class="fas fa-pen"></i></button>
+        @foreach (var item in dictionary)
+        {
+            if (item.Value)
+            {
+                <div class="btn-group bg-primary text-light rounded mr-1">
+                    <b class="ml-2 mr-1" style="font-size:.75em">@item.Key.Name</b>
+                    <button class="btn btn-primary text-light m-0 pl-1 pt-0 pr-1 pb-0 d-flex align-items-center" style="font-size:.75em" @onclick="()=>toggleValue(item)"><i class="fas fa-times"></i></button>
+                </div>
+            }
+        }
+    </div>
+    <div class="position-absolute bg-light text-dark rounded m-1 @collapse">
+        <div class="d-flex align-items-center justify-content-between">
+            <b class="ml-2 mr-3 mb-0">Роли</b>
+            <button class="btn btn-sm btn-light text-dark" @onclick="()=>toggleForm()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="ml-2 mr-2 mb-2">
+            @foreach (var item in dictionary)
+            {
+                if (item.Value)
+                {
+                    <div @onclick="()=>toggleValue(item)" style="cursor:default"><i class="fas fa-check mr-2 text-success"></i>@item.Key</div>
+                }
+                else
+                {
+                    <div @onclick="()=>toggleValue(item)" style="cursor:default"><i class="fas fa-check mr-2" style="opacity:.1"></i>@item.Key</div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+@code{
+    string collapse = "collapse";
+    [Parameter]
+    public List<IdentityRole> itemsAll { get; set; } = new List<IdentityRole>();
+    [Parameter]
+    public List<IdentityRole> itemsSelected { get; set; } = new List<IdentityRole>();
+    Dictionary<IdentityRole, bool> dictionary { get; set; } = new Dictionary<IdentityRole, bool>();
+    [Parameter]
+    public EventCallback<KeyValuePair<IdentityRole, bool>> itemToggled { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        dictionary = new Dictionary<IdentityRole, bool>();
+        foreach (var item in itemsAll)
+        {
+            if (itemsSelected.FirstOrDefault(i => i.Name == item.Name) != null)
+            {
+                dictionary.Add(item, true);
+            }
+            else
+            {
+                dictionary.Add(item, false);
+            }
+
+        }
+    }
+
+    void toggleForm()
+    {
+        collapse = collapse == "collapse" ? "" : "collapse";
+    }
+
+    void toggleValue(KeyValuePair<IdentityRole, bool> item)
+    {
+        dictionary[item.Key] = item.Value == true ? false : true;
+        itemToggled.InvokeAsync(dictionary.First(i => i.Key == item.Key));
+    }
+}

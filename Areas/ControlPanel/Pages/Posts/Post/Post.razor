@@ -1,0 +1,85 @@
+﻿<div class="d-flex bg-light text-dark mb-3 rounded">
+    <div class="d-flex flex-column m-3 w-75" style="min-height:10em">
+        <div class="flex-grow-1">
+            <h5 class="mb-0">@((MarkupString)@post.title)</h5>
+            <div class="text-muted small mb-1">@post.created.ToRus()</div>
+            <p>@((MarkupString)post.description)</p>
+        </div>        
+        <div class="d-flex align-items-start align-items-sm-center justify-content-between">
+            <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-center justify-content-sm-start">
+                <select class="btn btn-sm btn-light text-dark mb-1 mb-sm-0" @bind="published">
+                    <option class="btn btn-light text-dark text-left" value="True">опубликована</option>
+                    <option class="btn btn-light text-dark text-left" value="False">неопубликована</option>
+                </select>
+                <div class="d-flex align-items-center ml-2 ml-sm-3">
+                    @foreach (var tag in post.tags)
+                    {
+                        <span class="badge badge-tertiary text-dark p-1 mr-2">@tag.name</span>
+                    }
+                </div>
+            </div>                       
+            <div class="d-flex flex-column flex-sm-row justify-content-center align-items-center justify-content-sm-end">                
+                @if (!String.IsNullOrEmpty(post.content))
+                {
+                    <a class="btn btn-light text-dark mr-1 mb-0 mb-sm-1" href="/cpanel/posts/details/@post.ID"><i class="fas fa-eye"></i></a>
+                }
+                <a class="btn btn-light text-dark mr-1" title="Изменить" href="/cpanel/posts/edit/@post.ID"><i class="fas fa-pencil-alt"></i></a>
+                <div class="dropdown">
+                    <button class="btn btn-light text-danger" data-toggle="dropdown"><i class="fas fa-trash"></i></button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <div class="ml-2 mr-2">
+                            <h6 class="text-danger text-center">Удалить эту публикацию?</h6>
+                            <div class="d-flex justify-content-center">
+                                <button class="btn btn-sm btn-danger text-light mr-1" @onclick="() => удалить.InvokeAsync(post)">Удалить</button>
+                                <button class="btn btn-sm btn-light text-dark">Отмена</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex w-25">
+        @if (!string.IsNullOrEmpty(post.cover_video))
+        {
+            <div class="embed-responsive embed-responsive-16by9 rounded-right w-100">
+                <iframe class="embed-responsive-item" src='@post.cover_video.Replace("youtu.be","youtube.com/embed")'></iframe>
+            </div>
+        }
+        else if (!string.IsNullOrEmpty(post.cover_image))
+        {
+            <div class="d-flex align-self-stretch rounded-right w-100" style="background:url(@post.cover_image) center; background-size:cover;"></div>
+        }
+    </div> 
+</div>
+
+@code {
+    [Parameter]
+    public post post { get; set; }
+
+    [Parameter]
+    public EventCallback<post> удалить { get; set; }
+
+    [Parameter]
+    public EventCallback<post> обновить { get; set; }
+
+    string type
+    {
+        get => post.type.ToString();
+        set
+        {
+            post.type = (type) Enum.Parse(typeof(type), value);
+            обновить.InvokeAsync(post);
+        }
+    }
+
+    string published
+    {
+        get => post.published.ToString();
+        set
+        {
+            post.published = Boolean.Parse(value);
+            обновить.InvokeAsync(post);
+        }
+    }
+}

@@ -1,0 +1,49 @@
+﻿@inject TagsService TagsService
+@inject ViewBagService ViewBagService
+
+<div class="mb-3 d-flex align-items-center">
+    <h3 class="text-dark flex-grow-1 mb-1" style="padding-right: .5em; white-space: nowrap; max-width: 75%">@tag.description</h3>
+    
+    <div class="btn-group btn-group-sm overflow-hidden">
+        @foreach (var tag in tags)
+        {
+            <a class="btn btn-light text-dark" href="/posts/@tag.name" style="white-space:nowrap">@tag.name</a>
+        }
+    </div>
+    <div class="btn-group btn-group-sm">
+        <button class="btn btn-dark" style="border-radius:0 .2em .2em 0" data-toggle="dropdown">...</button>
+        <div class="dropdown-menu dropdown-menu-right bg-dark text-light">
+            @foreach (var tag in tags)
+            {
+                <a class="btn d-block btn-dark text-light rounded-0" href="/posts/@tag.name" style="width:100%; text-align:left;padding-left:1em;padding-right:1em; white-space:nowrap">@tag.name</a>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Tag { get; set; }
+
+    tag tag = new tag();
+
+    List<tag> tags = new List<tag>();
+
+    protected override void OnParametersSet()
+    {
+
+        Tag = Tag ?? "объявления";
+
+        tags = TagsService.tags();
+        tag = tags.FirstOrDefault(t => t.name == Tag);
+
+        tag объявления = tags.FirstOrDefault(t => t.name == "объявления");
+        tag новости = tags.FirstOrDefault(t => t.name == "новости");
+        tag видео = tags.FirstOrDefault(t => t.name == "видео");
+        tags.Remove(tags.FirstOrDefault(t => t.name == "объявления"));
+        tags.Remove(tags.FirstOrDefault(t => t.name == "новости"));
+        tags.Remove(tags.FirstOrDefault(t => t.name == "видео"));
+        tags.Insert(0, объявления);
+        tags.Insert(1, новости);
+        tags.Insert(2, видео);
+    }
+}

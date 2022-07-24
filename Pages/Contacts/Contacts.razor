@@ -1,0 +1,114 @@
+﻿@layout HomeLayout
+@page "/contacts"
+
+<PageTitle>Контакты</PageTitle>
+
+<h3 class="mb-3 text-dark">Контакты</h3>
+
+<div class="row">
+    <div class="col-md-5 mb-3">
+        <div class="card h-100 border-0 bg-light text-dark" style="border-radius:.5rem">
+            <div class="card-body">
+                <h5 class="card-title">Расписание работы храма:</h5>
+                <table class="table table-sm table-borderless text-dark">
+                    <tbody>
+                        <tr>
+                            <td>понедельник</td>
+                            <td class="text-right"><span class="badge badge-warning badge-pill">выходной</span></td>
+                        </tr>
+                        <tr>
+                            <td>вторник - пятница</td>
+                            <td class="text-right"><span class="badge badge-light badge-pill">с 9:00 до 13:00</span></td>
+                        </tr>
+                        <tr>
+                            <td>суббота</td>
+                            <td class="text-right"><span class="badge badge-light badge-pill">с 8:00 до 13:00</span> - <span class="badge badge-light badge-pill">с 16:30 до 18:30</span></td>
+                        </tr>
+                        <tr>
+                            <td>воскресенье</td>
+                            <td class="text-right"><span class="badge badge-light badge-pill">с 8:00 до 13:00</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5 mb-3">
+        <div class="card h-100 border-0 bg-light text-dark" style="border-radius:.5rem">
+            <div class="card-body">
+                <h5 class="card-title">Контактные телефоны:</h5>
+                <table class="table table-sm table-borderless text-dark">
+                    <tbody>
+                        <tr>
+                            <td>дежурный</td>
+                            <td class="text-right"><a class="badge badge-light badge-pill" href="tel:8-902-934-63-62">8-902-934-63-62</a></td>
+                        </tr>
+                        @*<tr>
+                        <td>о. Георгий</td>
+                        <td class="text-right"><span class="badge badge-dark badge-pill">8-910-911-35-48</span></td>
+                        </tr>*@
+                        <tr>
+                            <td>иерей Алексий Гарасим (настоятель храма)</td>
+                            <td class="text-right"><a class="badge badge-light badge-pill" href="tel:8-920-876-89-28">8-920-876-89-28</a></td>
+                        </tr>
+                        <tr>
+                            <td>иерей Сергий Горбулёв</td>
+                            <td class="text-right"><a class="badge badge-light badge-pill" href="tel:8-910-516-36-86">8-910-516-36-86</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2 mb-3">
+        <div class="card h-100 border-0 bg-light text-dark" style="border-radius:.5rem">
+            <div class="card-body">
+                <h5 class="card-title text-center">Соцсети:</h5>
+                <table class="table table-sm table-borderless text-dark">
+                    <tbody>
+                        <tr>
+                            <td class="d-flex align-items-center justify-content-center">
+                                <a class="btn text-dark bg-light rounded-circle d-flex align-items-center justify-content-center" style="width:40px; height:40px" href="https://vk.com/hrambabynino" target="_blank">
+                                    <i class="fab fa-vk" style="font-size:large"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 mb-3">
+        <div class="card h-100 border-0 bg-light text-dark" style="border-radius:.5rem">
+            <div class="card-body">
+                <h5 class="card-title">Адрес храма:</h5>
+                <table class="table table-sm table-borderless text-dark">
+                    <tbody>
+                        <tr>
+                            <td>249210, Калужская обл., пос. Бабынино, Базарная пл., 1</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3A1d0793ef598f25d7215812b0a3e84c9679b974f4203d05675f906ba4125cddb3&amp;source=constructor" width="100%" height="400" frameborder="0"></iframe>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 mb-3" hidden>
+        <div class="card h-100 border-0 bg-light text-dark" style="border-radius:.5rem">
+            <div class="card-body">
+                <h5 class="card-title">Собираем деньги:</h5>
+                <div class="card h-100 border-0 bg-light text-dark" style="border-radius:.5rem">
+                    <iframe src="https://yoomoney.ru/quickpay/shop-widget?writer=seller&targets=%D0%9D%D0%B0%20%D1%81%D0%BE%D0%B4%D0%B5%D1%80%D0%B6%D0%B0%D0%BD%D0%B8%D0%B5%20%D1%81%D0%B0%D0%B9%D1%82%D0%B0&targets-hint=&default-sum=50&button-text=13&payment-type-choice=on&mobile-payment-type-choice=on&hint=&successURL=&quickpay=shop&account=41001654957164&" width="422" height="223" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+}

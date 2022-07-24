@@ -1,0 +1,31 @@
+﻿@inject IJSRuntime JSRuntime
+
+<style>
+    .my_background{
+        opacity:.9;
+    }
+    .my_background:hover {
+        cursor: pointer;
+        opacity:1;
+    }
+</style>
+
+<div class="col mb-3">
+    <div class="tofullscreen card bg-light text-white border-0 shadow-sm my_background" style="border-radius:.25rem !important;" @onclick="onclick">
+        <div class="card-img shadow-sm" style="border-radius:.25rem !important; background:url(@album.cover_image); background-size:cover; height:300px"></div>
+        <div class="card-img-overlay" style="background-color:rgba(0,0,0,.3); border-radius:.25rem !important">
+            <h5>@album.title</h5>
+            <div>@album.description</div>
+            <div class="badge badge-secondary badge-pill">фотографий в альбоме: <span class="badge badge-light badge-pill">@album.images.Count</span></div>
+            <div class="badge badge-secondary badge-pill">опубликован: <span class="badge badge-light badge-pill">@album.created.ToRus()</span></div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public imageAlbum album { get; set; }
+
+    [Parameter]
+    public EventCallback onclick { get; set; }
+}

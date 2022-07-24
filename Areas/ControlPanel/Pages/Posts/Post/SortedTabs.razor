@@ -1,0 +1,85 @@
+﻿<div class="mb-3">
+    <div class="btn-group btn-group-sm mb-1">
+        <div class="btn btn-sm btn-tertiary text-dark mb-0">тип:</div>
+        <select class="btn btn-sm btn-light text-dark" @bind="filter1">
+            @foreach (var item in Enum.GetValues(typeof(filter1)))
+            {
+                <option class="btn btn-light text-dark text-left">@item</option>
+            }
+        </select>
+    </div>
+    
+    <div class="btn-group btn-group-sm mb-1">
+        <div class="btn btn-sm btn-tertiary text-dark mb-0">дата:</div>
+        <select class="btn btn-sm btn-light text-dark" @bind="filter3">
+            @foreach (var item in Enum.GetValues(typeof(filter3)))
+            {
+                <option class="btn btn-light text-dark text-left">@item</option>
+            }
+        </select>
+    </div>
+
+    <div class="btn-group btn-group-sm mb-1">
+        <div class="btn btn-sm btn-tertiary text-dark mb-0">тег:</div>
+        <select class="btn btn-sm btn-light text-dark" @bind="filter4">
+            <option class="btn btn-light text-dark text-left">все</option>
+            @foreach (var item in tags)
+            {
+                if (item.name=="объявления")
+                {
+                    <option class="btn btn-light text-dark text-left" selected>@item.name</option>
+                }
+                else
+                {
+                    <option class="btn btn-light text-dark text-left">@item.name</option>
+                }
+            }
+        </select>
+    </div>
+</div>
+
+
+@code {
+    Filter Filter { get; set; } = new Filter();
+
+    [Parameter]
+    public List<tag> tags { get; set; } = new List<tag>();
+
+    [Parameter]
+    public EventCallback<Filter> filterChanged { get; set; }
+
+    string filter1
+    {
+        get => Filter.filter1.ToString();
+        set
+        {
+            Filter.filter1 = (filter1)Enum.Parse(typeof(filter1), value);
+            filterChanged.InvokeAsync(Filter);
+        }
+    }
+
+    string filter3
+    {
+        get => Filter.filter3.ToString();
+        set
+        {
+            Filter.filter3 = (filter3)Enum.Parse(typeof(filter3), value);
+            filterChanged.InvokeAsync(Filter);
+        }
+    }
+
+    string filter4
+    {
+        get => Filter.filter4;
+        set
+        {
+            Filter.filter4 = value;
+            filterChanged.InvokeAsync(Filter);
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        filter4 = "объявления";
+    }
+}

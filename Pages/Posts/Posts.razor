@@ -1,0 +1,47 @@
+﻿@layout HomeLayout
+@page "/"
+@page "/posts/{Tag?}"
+@inject PostsService PostsService
+@inject TagsService tagsService
+
+<PageTitle>@(Tag.Substring(0, 1).ToUpper() + Tag.Substring(1))</PageTitle>
+
+    <TagNavigation Tag="@Tag"></TagNavigation>
+
+@if (posts.Where(p => p.tags.Contains(p.tags.FirstOrDefault(t => t.name == Tag))).Count()>0)
+{
+    <div class="row mb-2 row-cols-1 row-cols-md-2 row-cols-xl-3 justify-content-start">
+        @foreach (var post in posts.Where(p => p.tags.Contains(p.tags.FirstOrDefault(t => t.name == Tag))))
+        {
+            <Post post="post"></Post>
+        }
+    </div>
+
+    @if (PostsService.canNext)
+    {
+        <button class="btn btn-light text-dark w-100" @onclick="()=> { posts = null; posts = nextPosts(tag: Tag); }">Загрузить ещё</button>
+    }
+}
+else
+{
+    <div class="alert alert-info mt-3"><b>@tagsService.tags().FirstOrDefault(t=>t.name==Tag).description на данный момент отсутствуют</b></div>
+}
+
+
+
+
+@code {
+    [Parameter] public string Tag { get; set; }
+    List<post> posts = new List<post>();
+
+    List<post> nextPosts(string tag)
+    {
+        return PostsService.getNext(tag: tag).OrderBy(p => p.created).Where(p => p.published == true).Reverse().ToList();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Tag = Tag ?? "объявления";
+        posts = nextPosts(tag: Tag);
+    }
+}

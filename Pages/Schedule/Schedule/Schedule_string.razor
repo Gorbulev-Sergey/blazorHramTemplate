@@ -1,0 +1,89 @@
+﻿@using System.Globalization
+
+<tr class="@цвет_фона">
+    @if (date_show)
+    {
+        <th scope="row" width="16%" class="mr-1 font-weight-normal">
+            <span class="">
+                @schedule_string.date_and_time.Day @schedule_string.date_and_time.ToRusMonth(), @CultureInfo.GetCultureInfo("ru-RU").DateTimeFormat.GetDayName(schedule_string.date_and_time.DayOfWeek)
+            </span>
+        </th>
+        <th scope="row" width="59%" class="font-weight-normal"><div class="@маркер_праздника">@schedule_string.description</div></th>
+    }
+    else
+    {
+        <th scope="row" width="16%" class="border-top-0"></th>
+        <th scope="row" width="60%" class="border-top-0 font-weight-normal"><div class="@маркер_праздника">@schedule_string.description</div></th>
+    }
+    <th scope="row" width="20%" class="font-weight-normal text-right">
+        <span class="">
+            @schedule_string.GetDescription(Enum.Parse<тип_службы>(schedule_string.prayer.ToString()))
+        </span>
+    </th>    
+    <th scope="row" width="4%" class="font-weight-normal"><div class="text-right mr-1">@schedule_string.date_and_time.ToString("H:mm")</div></th>
+</tr>
+
+
+@code {
+    [Parameter]
+    public schedule_string schedule_string { get; set; }
+
+    [Parameter]
+    public bool date_show { get; set; }
+
+    string цвет_фона;
+    string маркер_праздника
+    {
+        get
+        {
+            switch (schedule_string.тип_праздника)
+            {
+                case тип_праздника.пусто: return "";
+                case тип_праздника.жирный: return "font-weight-bold";
+                case тип_праздника.курсив: return "font-italic";
+                case тип_праздника.жирный_заглавный: return "font-weight-bold text-uppercase";
+
+                case тип_праздника.primary: return "text-primary";
+                case тип_праздника.success: return "text-success";
+                case тип_праздника.danger: return "text-danger";
+                case тип_праздника.warning: return "text-warning";
+                case тип_праздника.info: return "text-info";
+                case тип_праздника.light: return "text-light";
+                case тип_праздника.secondary: return "text-secondary";
+
+                case тип_праздника.primary_cursive: return "text-primary font-italic";
+                case тип_праздника.success_cursive: return "text-success font-italic";
+                case тип_праздника.danger_cursive: return "text-danger font-italic";
+                case тип_праздника.warning_cursive: return "text-warning font-italic";
+                case тип_праздника.info_cursive: return "text-info font-italic";
+                case тип_праздника.light_cursive: return "text-light font-italic";
+                case тип_праздника.secondary_cursive: return "text-secondary font-italic";
+
+                case тип_праздника.primary_bold: return "text-primary font-weight-bold";
+                case тип_праздника.success_bold: return "text-success font-weight-bold";
+                case тип_праздника.danger_bold: return "text-danger font-weight-bold";
+                case тип_праздника.warning_bold: return "text-warning font-weight-bold";
+                case тип_праздника.info_bold: return "text-info font-weight-bold";
+                case тип_праздника.light_bold: return "text-light font-weight-bold";
+                case тип_праздника.secondary_bold: return "text-secondary font-weight-bold";
+
+                case тип_праздника.primary_bold_up: return "text-primary font-weight-bold text-uppercase";
+                case тип_праздника.success_bold_up: return "text-success font-weight-bold text-uppercase";
+                case тип_праздника.danger_bold_up: return "text-danger font-weight-bold text-uppercase";
+                case тип_праздника.warning_bold_up: return "text-warning font-weight-bold text-uppercase";
+                case тип_праздника.info_bold_up: return "text-info font-weight-bold text-uppercase";
+                case тип_праздника.light_bold_up: return "text-light font-weight-bold text-uppercase";
+                case тип_праздника.secondary_bold_up: return "text-secondary font-weight-bold text-uppercase";
+            }
+            return "";
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (schedule_string.date_and_time.DayOfWeek == DayOfWeek.Sunday)
+        {
+            цвет_фона = "bg-tertiary text-danger";
+        }
+    }
+}

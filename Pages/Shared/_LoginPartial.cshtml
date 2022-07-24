@@ -1,0 +1,32 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using blazorHramTemplate2.Models
+@inject SignInManager<user> SignInManager
+@inject UserManager<user> UserManager
+
+
+<div class="d-flex justify-content-end mt-1 mt-lg-0">
+    @if (SignInManager.IsSignedIn(User) && (User.IsInRole("администратор") || User.IsInRole("редактор")))
+    {
+        <a class="btn btn-light text-dark mr-1" href="/cpanel/posts" title="Панель управления">Панель управления</a>
+    }
+    <button class="btn btn-light text-dark mr-1" onclick="changeBootstrap(document.querySelector('#bootstrap'))" title="Поменять тему"><i class="far fa-sun"></i></button>
+    <button class="btn btn-light text-dark" data-toggle="dropdown" title="Профиль">
+        <i class="fas fa-id-card-alt"></i>
+    </button>
+    <div class="dropdown-menu dropdown-menu-right bg-light p-0 border-0">
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <div class="d-flex flex-column">
+                <a class="btn btn-light text-dark text-left" href="/Identity/Account/Manage/Index" title="Профиль">Профиль</a>
+                <a class="btn btn-light text-dark text-left" href="/Identity/Account/Logout" title="Выход">Выход</a>
+            </div>
+        }
+        else
+        {
+            <div class="d-flex flex-column">
+                <a class="btn btn-light text-dark text-left" href="/Identity/Account/Login" title="Вход">Вход</a>
+                <a class="btn btn-light text-dark text-left" href="/Identity/Account/Register" title="Регистрация">Регистрация</a>
+            </div>
+        }
+    </div>
+</div>

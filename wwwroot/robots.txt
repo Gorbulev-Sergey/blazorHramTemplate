@@ -1,0 +1,7 @@
+﻿User-agent: *
+Disallow: /Identity/*
+
+Disallow: /cpanel
+Disallow: /cpanel/*
+Host: http://www.hram-babynino.somee.com
+Sitemap: http://www.hram-babynino.somee.com/sitemap.xml

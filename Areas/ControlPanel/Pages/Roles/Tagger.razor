@@ -1,0 +1,58 @@
+﻿<div class="mb-3">
+    <div class="btn-group btn-group-sm mr-2 mb-1">
+        <div class="dropdown">
+            <input class="btn btn-sm btn-light text-dark text-left rounded-left" style="border-radius:0" readonly @bind-value="value" data-toggle="dropdown" placeholder="Добавить роль" />
+            <div class="dropdown-menu bg-light p-0 border-0">
+                <div class="d-flex flex-column">
+                    @foreach (var item in itemsAll.OrderBy(i => i))
+                    {
+                        <div class="btn btn-light text-dark text-left w-100" @onclick="()=>value=item">@item</div>
+                    }
+                </div>
+            </div>
+        </div>
+        <button class="btn btn-tertiary text-dark" @onclick="()=>add(value)"><i class="fas fa-plus"></i></button>
+    </div>
+    @foreach (var item in itemsSelected)
+    {
+        <div class="btn-group btn-group-sm mr-1 mb-1">
+            <div class="bg-light text-dark rounded-left pl-2 pt-1 pr-2 pb-1 text-nowrap" style="cursor:default;">@item</div>
+            <button class="btn btn-sm btn-tertiary text-dark" @onclick="()=>delete(item)"><i class="fas fa-times"></i></button>
+        </div>
+    }
+</div>
+
+@code {
+    string value = "";
+    [Parameter]
+    public List<string> itemsAll { get; set; } = new List<string>();
+    [Parameter]
+    public List<string> itemsSelected { get; set; } = new List<string>();
+    [Parameter]
+    public EventCallback<string> itemAdded { get; set; }
+    [Parameter]
+    public EventCallback<string> itemDeleted { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        itemsAll.RemoveAll(i => itemsSelected.Contains(i));
+    }
+
+    void add(string item)
+    {
+        if (itemsAll.Contains(item) & !string.IsNullOrEmpty(item) & !itemsSelected.Contains(item))
+        {
+            itemsSelected.Add(item);
+            itemsAll.Remove(item);
+            value = "";
+            itemAdded.InvokeAsync(item);
+        }
+    }
+
+    void delete(string item)
+    {
+        itemsSelected.Remove(item);
+        itemsAll.Add(item);
+        itemDeleted.InvokeAsync(item);
+    }
+}

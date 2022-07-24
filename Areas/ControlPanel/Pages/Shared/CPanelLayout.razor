@@ -1,0 +1,72 @@
+﻿@inherits LayoutComponentBase
+
+<nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light text-dark mb-3 align-items-center" style="z-index:100000;">
+    <button class="navbar-toggler btn-light text-dark border-0" data-toggle="collapse" data-target=".navbar-collapse"><i class="fas fa-bars"></i></button>
+    <a class="card-link font-weight-bold text-uppercase ml-2 mr-2 mr-lg-4 site-title" href="cpanel/posts"><span class="text-dark">Панель управления</span></a>
+    <div class="navbar-collapse collapse">
+        <div class="navbar-nav mt-1 m-lg-0">
+            <a class="btn btn-light text-dark text-left mr-lg-1 mt-1 mt-lg-0" onclick="$('.navbar-collapse').toggleClass('show')" href="cpanel/posts/">Публикации</a>
+            <a class="btn btn-light text-dark text-left mr-lg-1 mt-1 mt-lg-0" onclick="$('.navbar-collapse').toggleClass('show')" href="cpanel/schedule">Расписание</a>
+            <a class="btn btn-light text-dark text-left mr-lg-1 mt-1 mt-lg-0" onclick="$('.navbar-collapse').toggleClass('show')" href="cpanel/tags">Теги</a>
+            <a class="btn btn-light text-dark text-left mr-lg-1 mt-1 mt-lg-0" onclick="$('.navbar-collapse').toggleClass('show')" href="cpanel/photos">Фотографии</a>
+            <a class="btn btn-light text-dark text-left mr-lg-1 mt-1 mt-lg-0" onclick="$('.navbar-collapse').toggleClass('show')" href="cpanel/contacts" hidden>Контакты</a>
+            <AuthorizeView>
+                <Authorized Context="context">
+                    @if (context.User.IsInRole("администратор"))
+                    {
+                        <a class="btn btn-light text-dark text-left mr-lg-1 mt-1 mt-lg-0" onclick="$('.navbar-collapse').toggleClass('show')" href="cpanel/users">Пользователи</a>
+                        <a class="btn btn-light text-dark text-left mr-lg-1 mt-1 mt-lg-0" onclick="$('.navbar-collapse').toggleClass('show')" href="cpanel/settings">Настройки</a>
+                    }
+                </Authorized>
+            </AuthorizeView>
+        </div>
+        <div class="flex-grow-1 d-flex justify-content-between mt-1 mt-lg-0">
+            <div class="dropdown">
+                <button class="btn btn-light text-dark mr-1" data-toggle="dropdown">
+                    <i class="fas fa-plus-circle" style="font-size:1.1em"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-left bg-light p-0 border-0">
+                    <div class="d-flex flex-column">
+                        <a class="btn btn-light text-dark text-left mt-1 mt-lg-0" onclick="$('.navbar-collapse').toggleClass('show')" href="cpanel/posts/create">Публикация</a>
+                        <a class="btn btn-light text-dark text-left mt-1 mt-lg-0" onclick="$('.navbar-collapse').toggleClass('show')" href="cpanel/photos/create">Фотоальбом</a>
+                        <a class="btn btn-light text-dark text-left mt-1 mt-lg-0" onclick="$('.navbar-collapse').toggleClass('show')" href="cpanel/tags">Тег</a>
+                        <a class="btn btn-light text-dark text-left mt-1 mt-lg-0" onclick="$('.navbar-collapse').toggleClass('show')" href="cpanel/schedule/create">Расписание</a>
+                        <AuthorizeView>
+                            <Authorized Context="context">
+                                @if (context.User.IsInRole("администратор"))
+                                {
+                                    <a class="btn btn-light text-dark text-left mt-1 mt-lg-0" onclick="$('.navbar-collapse').toggleClass('show')" href="cpanel/settings/edit">Настройки</a>
+                                }
+                            </Authorized>
+                        </AuthorizeView>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex">
+                <a class="btn btn-light text-dark mr-1" href="/" title="Вернуться на сайт">Сайт</a>
+                <Login />
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container" style="margin-top:5em; min-height:90vh;">
+    @Body
+</div>
+
+<footer class="footer bg-light text-muted" style="margin-top: 4em; font-size:.94em;">
+    <div class="text-center p-3 text-wrap">
+        <a class="text-muted no-print" target="_blank" href="https://yandex.ru/maps/-/CCUA6Paa~B">ПОС. БАБЫНИНО КАЛУЖСКОЙ ОБЛ.</a>
+        <p class="mb-0">
+            Контакты: дежурный храма <span class="badge badge-secondary badge-pill">8-910-521-59-79</span>,
+            настоятель храма (отец Алексей) <span class="badge badge-secondary badge-pill">8-920-876-89-28</span>,
+            второй священник (отец Сергий) <span class="badge badge-secondary badge-pill">8-910-516-36-86</span>.
+        </p>
+        <p class="mb-0 no-print">Большая благодарность компании <a target="_blank" href="https://somee.com/">somee.com</a> за возможность разместить наш сайт на их серверах.</p>
+        <p class="mb-0 collapse">Дополнительную информацию смотрите на сайте храма: <span class="badge badge-secondary badge-pill">hram-babynino.somee.com</span>.</p>
+    </div>
+</footer>
+
+
+
+

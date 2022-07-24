@@ -1,0 +1,53 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Вход";
+}
+
+<h1 class="text-dark">@ViewData["Title"]</h1>
+<div class="row text-dark">
+    <div class="col-md-12">
+        <section>
+            <form id="account" method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Input.Email"></label>
+                    <input asp-for="Input.Email" class="form-control border-0 bg-light text-dark" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Password"></label>
+                    <input asp-for="Input.Password" class="form-control border-0 bg-light text-dark" />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label asp-for="Input.RememberMe">
+                            <input asp-for="Input.RememberMe" />
+                            @Html.DisplayNameFor(m => m.Input.RememberMe)
+                        </label>
+                    </div>
+                </div>
+            </form>
+            <div class="form-group">
+                <div class="d-flex justify-content-between align-items-start">
+                    <button class="btn btn-tertiary text-dark" onclick="$(this).parent().parent().prev().submit()">Войти</button>
+                    <div class="flex-grow-1 d-flex justify-content-end">
+                        <div class="p-2">Использовать: </div>
+                        <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                            @foreach (var provider in Model.ExternalLogins)
+                            {
+                                <button type="submit" class="btn btn-tertiary text-dark ml-1 mb-1 mb-lg-0" name="provider" value="@provider.Name" title="Используйте для входа в систему @provider.DisplayName">@provider.DisplayName</button>
+                            }
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

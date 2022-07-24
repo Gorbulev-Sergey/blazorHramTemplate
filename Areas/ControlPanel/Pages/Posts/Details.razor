@@ -1,0 +1,51 @@
+﻿@layout CPanelLayout
+@page "/cpanel/posts/details/{id:int}"
+@attribute [Authorize(Roles = "администратор, редактор")]
+@inject PostsService PostsService
+@inject NavigationManager NavigationManager
+
+<h3 class="mb-3 text-dark">Подробности</h3>
+
+<div class="card bg-light text-dark border-0">
+    <div class="card-header bg-light text-dark d-flex align-items-center justify-content-between border-0">
+        <div class="d-flex align-items-center">
+            <a class="btn btn-light bg-transparent" href="/cpanel/posts" title="Вернуться назад"><i class="fas fa-chevron-left"></i></a>
+            <h4 class="card-title ml-3 mb-0 mr-3">@post.title</h4>
+        </div>
+        <div class="small text-danger">@post.created.ToString("dd.MM.yyyy")</div>
+    </div>
+    <div class="card-body">
+        @if (String.IsNullOrEmpty(post.content))
+        {
+            @((MarkupString)post.description)
+        }
+        else
+        {
+            @((MarkupString)post.content)
+        }
+    </div>
+    @if (String.IsNullOrEmpty(post.content) && !String.IsNullOrEmpty(post.cover_image))
+    {
+        <img src="@post.cover_image" class="img-fluid">
+    }
+    <div class="card-footer bg-light text-dark border-0">
+        <div class=" d-flex align-items-center justify-content-between">
+            <a class="btn btn-light text-dark" href="/cpanel/posts" title="Вернуться назад"><i class="fas fa-chevron-left mr-2"></i>Назад</a>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    post post = new post();
+
+    protected override async Task OnInitializedAsync()
+    {
+        post = await PostsService.itemByIdAsync(id);
+    }
+}
+
+

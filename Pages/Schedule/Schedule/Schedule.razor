@@ -1,0 +1,51 @@
+﻿@using System.Globalization
+@inject ScheduleService SchedulesService
+
+<div class="table-responsive border-0 bg-light" style="border-radius:.25rem">
+    <div class="pl-3 pt-2 pr-3 pb-1">
+        <h6 class="text-dark m-0 p-0 text-nowrap flex-nowrap">Расписание на @CultureInfo.GetCultureInfo("ru-RU").DateTimeFormat.GetMonthName(date.Month).ToUpper() @date.Year года</h6>
+    </div>
+    <table class="table table-borderless bg-light text-dark m-0">
+        <thead class="no-print">
+            <tr class="text-light">
+                <th scope="col" class="mr-1"><span class="badge badge-secondary">Дата</span></th>
+                <th scope="col"><span class="badge badge-secondary">Праздник</span></th>
+                <th scope="col"><span class="badge badge-secondary float-right">Богослужение</span></th>
+                <th scope="col"><span class="badge badge-secondary">Время</span></th>
+            </tr>
+        </thead>
+        <tbody class="border-0">
+            @{int дата_предыдущего = 0; }
+            @foreach (var str in schedule)
+            {
+                if (дата_предыдущего != str.date_and_time.Day)
+                {
+                    <Schedule_string schedule_string="str" date_show="true"></Schedule_string>
+                    дата_предыдущего = str.date_and_time.Day;
+                }
+                else
+                {
+                    <Schedule_string schedule_string="str" date_show="false"></Schedule_string>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<br />
+
+
+@code {
+    [Parameter]
+    public DateTime date { get; set; }
+
+    [Parameter]
+    public string title { get; set; }
+
+    public List<schedule_string> schedule { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        schedule = SchedulesService.schedule(date);
+    }
+}

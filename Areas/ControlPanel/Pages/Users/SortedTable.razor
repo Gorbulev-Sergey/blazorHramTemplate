@@ -1,0 +1,94 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using System.Reflection
+
+<div>
+    <header class="d-flex align-content-center flex-wrap mb-1">
+        @foreach (var name in items.FirstOrDefault().GetType().GetProperties())
+        {                      
+            if (!name.PropertyType.IsGenericType & name.Name!="Id")
+            {
+                <div class="mr-1 mb-1">
+                    @if (name.Name == key.Key & key.Value)
+                    {
+                        <button class="btn btn-sm btn-light text-dark" @onclick="() => orderBy(name.Name)">
+                            <span class="ml-1 mr-2">@getDescription(name)</span>
+                            <i class="fas fa-angle-down"></i>
+                        </button>
+                    }
+                    else if (name.Name == key.Key & !key.Value)
+                    {
+                        <button class="btn btn-sm btn-light text-dark" @onclick="() => orderBy(name.Name)">
+                            <span class="ml-1 mr-2">@getDescription(name)</span>
+                            <i class="fas fa-angle-up"></i>
+                        </button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-sm btn-light text-dark" @onclick="() => orderBy(name.Name)">
+                            <span class="ml-1 mr-2">@getDescription(name)</span>
+                            <i class="fas fa-angle-right"></i>
+                        </button>
+                    }
+                </div>
+            }
+        }
+    </header>
+    <main>
+        @foreach (var item in items)
+        {
+        <div class="bg-light text-dark rounded p-3 mb-2">
+            <div class="d-flex flex-wrap">
+                @foreach (var property in item.GetType().GetProperties())
+                {
+                    if (!property.PropertyType.IsGenericType & property.Name != "Id")
+                    {
+                        <div class="mr-3 mb-1">
+                            <span class="badge badge-secondary text-dark">@getDescription(property)</span>
+                            @property.GetValue(item)
+                        </div>
+                    }
+                }
+            </div>
+            @Addons(item)
+        </div>            
+        }
+    </main>
+</div>
+
+@code{
+    [Parameter]
+    public List<object> items { get; set; } = new List<object>();
+
+    KeyValuePair<string, bool> key = new KeyValuePair<string, bool>(key: "", value: false);
+
+    [Parameter]
+    public RenderFragment<object> Addons { get; set; }
+
+
+    string getDescription(PropertyInfo property)
+    {
+        var description = property.GetCustomAttributes(typeof(DisplayAttribute), true).Cast<DisplayAttribute>
+            ().SingleOrDefault();
+        return description != null ? description.Name : property.Name;
+    }
+
+    void orderBy(string parameter)
+    {
+        try
+        {
+            if (key.Key == parameter & key.Value)
+            {
+                items = items.OrderByDescending(p => p.GetType().GetProperty(parameter).GetValue(p)).ToList();
+                key = new KeyValuePair<string, bool>
+                    (key: parameter, value: false);
+            }
+            else
+            {
+                items = items.OrderBy(p => p.GetType().GetProperty(parameter).GetValue(p)).ToList();
+                key = new KeyValuePair<string, bool>
+                    (key: parameter, value: true);
+            }
+        }
+        catch { }
+    }
+}

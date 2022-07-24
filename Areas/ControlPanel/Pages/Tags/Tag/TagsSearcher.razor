@@ -1,0 +1,87 @@
+﻿@inject TagsService TagsService
+
+<div class="mb-3">
+    <div class="btn-group btn-group-sm mr-2 mb-2">
+        <div class="dropdown">
+            <input class="btn btn-sm btn-light text-dark text-left rounded-left" style="border-radius:0" @bind-value="value" data-toggle="dropdown" placeholder="Добавить тег">
+            <div class="dropdown-menu bg-light p-0 border-0">
+                <div class="d-flex flex-column">
+                    @foreach (var tag in tags.OrderBy(t => t.name).OrderBy(t => t.name))
+                    {
+                        <div class="btn btn-light text-dark text-left w-100" @onclick="()=>value=tag.name">@tag.name</div>
+                    }
+                </div>
+            </div>
+        </div>
+        <button class="btn btn-tertiary text-dark" @onclick="()=>добавить(value)"><i class="fas fa-plus"></i></button>
+    </div>
+    @foreach (var tag in addedTags)
+    {
+        <Tag tag="tag" убрать="()=>убрать(tag)"></Tag>
+    }
+</div>
+
+
+@code {
+    string value;
+    List<tag> tags = new List<tag>();
+    void добавить(string tag_text)
+    {
+        if (tags.FirstOrDefault(t => t.name == tag_text) != null)
+        {
+            if (addedTags.FirstOrDefault(t => t.name == tag_text) == null)
+            {
+                addedTags.Add(tags.FirstOrDefault(t => t.name == tag_text));
+            }
+        }
+        else
+        {
+            if (!String.IsNullOrWhiteSpace(tag_text))
+            {
+                var tag = new tag { name = tag_text.ToLower() };
+                TagsService.add(tag);
+                tags.Add(tag);
+                addedTags.Add(tag);
+            }
+        }
+        addedTagsChanged.InvokeAsync(addedTags);
+        value = String.Empty;
+    }
+
+    List<tag> _addedTags = new List<tag>();
+    [Parameter]
+    public List<tag> addedTags
+    {
+        get => _addedTags;
+        set
+        {
+            if (_addedTags != value)
+            {
+                _addedTags = value;
+            }
+        }
+    }
+    [Parameter]
+    public EventCallback<List<tag>> addedTagsChanged { get; set; }
+
+    [Parameter]
+    public bool inserted { get; set; }
+
+    void убрать(tag tag)
+    {
+        addedTags.Remove(tag);
+        удалить.InvokeAsync(tag);
+        addedTagsChanged.InvokeAsync(addedTags);
+    }
+    [Parameter]
+    public EventCallback<tag> удалить { get; set; }
+
+    protected override void OnInitialized()
+    {
+        tags = TagsService.tags();
+        if (inserted)
+        {
+            addedTags.AddRange(tags);
+        }
+    }
+}

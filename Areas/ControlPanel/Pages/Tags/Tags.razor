@@ -1,0 +1,15 @@
+﻿@layout CPanelLayout
+@page "/cpanel/tags"
+@attribute [Authorize(Roles = "администратор, редактор")]
+@inject TagsService TagsService
+
+<h3 class="mb-3 text-dark">Теги</h3>
+
+<blazorHramTemplate2.Areas.ControlPanel.Pages.Tags.Tag.TagsSearcherForCPanel inserted="true" удалить="удалить" />
+
+@code {
+    void удалить(tag tag)
+    {
+        TagsService.remove(tag);
+    }
+}

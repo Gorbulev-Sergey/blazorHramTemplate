@@ -1,0 +1,25 @@
+﻿
+<div class="col mb-4">
+    <div class="card bg-light text-white border-0 shadow-sm my_background" style="border-radius:.25rem !important; opacity:.9">
+        <div class="card-img shadow-sm" style="border-radius:.25rem !important; background:url(@album.cover_image); background-size:cover; height:300px"></div>
+        <div class="card-img-overlay" style="background-color:rgba(0,0,0,.3); border-radius:.25rem !important">
+            <div class="badge badge-secondary badge-pill">id: @album.ID</div>
+            <h4>@album.title</h4>
+            <div>@album.description</div>
+            <div class="badge badge-secondary badge-pill">фотографий в альбоме: <span class="badge badge-light badge-pill">@album.images.Count</span></div>
+            <div class="badge badge-secondary badge-pill">опубликован: <span class="badge badge-light badge-pill">@album.created.ToRus()</span></div>
+        </div>
+        <div class="card-body position-absolute fixed-bottom d-flex justify-content-center">
+            @Navigation
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public imageAlbum album { get; set; }
+
+    [Parameter]
+    public RenderFragment Navigation { get; set; }
+}

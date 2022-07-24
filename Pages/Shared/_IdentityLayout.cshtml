@@ -1,0 +1,78 @@
+﻿
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Храм Вознесения Господня</title>
+    <link id="bootstrap" href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="/my_js/loadBootstrap.js"></script>
+    <link href="/font-awesome/css/all.min.css" rel="stylesheet" />
+    <base href="~/" />
+</head>
+<body class="bg-secondary">
+    <style>
+        /*Уменьшаем размер заголовка сайта для маленьких смартфонов*/
+        .site-title {
+            font-size: 1.25em !important;
+        }
+
+        @@media (max-width: 500px) and (min-width: 0) {
+            .site-title {
+                font-size: .88em !important;
+            }
+        }
+    </style>
+
+    <nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light text-dark mb-3 align-items-center" style="z-index:100000;">
+        <button class="navbar-toggler btn-light text-dark border-0" data-toggle="collapse" data-target=".navbar-collapse"><i class="fas fa-bars"></i></button>
+        <a class="card-link font-weight-bold text-uppercase ml-2 mr-2 mr-lg-4 site-title" href="/posts/объявления"><span class="text-danger">ХРАМ</span> <span class="text-dark">ВОЗНЕСЕНИЯ ГОСПОДНЯ</span></a>
+        <div class="navbar-collapse collapse">
+            <div class="navbar-nav flex-grow-1 mt-1 m-lg-0">
+                <a class="btn btn-light text-dark text-left mr-lg-1 mt-1 mt-lg-0" href="/posts/объявления">Публикации</a>
+                <a class="btn btn-light text-dark text-left mr-lg-1 mt-1 mt-lg-0" href="/schedule">Расписание</a>
+                <a class="btn btn-light text-dark text-left mr-lg-1 mt-1 mt-lg-0" href="/photos">Фотографии</a>
+                <a class="btn btn-light text-dark text-left mr-lg-1 mt-1 mt-lg-0" href="/contacts">Контакты</a>
+            </div>
+            <partial name="_LoginPartial" />
+        </div>
+    </nav>
+    <header class="position-fixed vw-100" style="z-index:100000; top:0;" hidden>
+        <nav class="navbar navbar-expand-xl navbar-dark navbar-toggleable-xl bg-dark box-shadow mb-3 shadow d-flex flex-column">
+            <div class="container ml-0 mr-0 pr-2">
+                <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <a class="navbar-brand ml-xl-n2 font-weight-bold" style="margin-top:-1px;" href="/posts/объявления"><span class="text-danger">ХРАМ</span> ВОЗНЕСЕНИЯ <span class="скрыть">ГОСПОДНЯ</span></a>
+                <div class="navbar-collapse collapse d-xl-inline-flex flex-xl-row-reverse">
+                    <partial name="_LoginPartial" />
+                    <ul class="navbar-nav flex-grow-1 mt-2 m-xl-0 text-white">
+                        <li class="nav-item">
+                            <a class="btn btn-dark mr-1" href="/posts/объявления">Публикации</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-dark mr-1" href="/schedule">Расписание</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-dark mr-1" href="/photos">Фотографии</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-dark mr-1" href="/contacts">Контакты</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container" style="margin-top:5em;">
+        @RenderBody()
+    </div>
+
+    <script src="/jquery/jquery.slim.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/font-awesome/js/all.min.js"></script>
+    <script src="/my_js/changeBootstrap.js"></script>
+    <script src="/my_js/remove_somee.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

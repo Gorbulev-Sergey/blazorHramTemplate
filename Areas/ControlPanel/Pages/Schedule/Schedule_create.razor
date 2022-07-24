@@ -1,0 +1,35 @@
+﻿
+<div class="table-responsive">
+    <table class="table table-sm table-borderless rounded bg-light text-dark p-2 m-0">
+        <thead>
+            <tr class="text-light">
+                <th scope="col" class="mr-1"><span class="badge badge-secondary">Дата</span></th>
+                <th scope="col"><span class="badge badge-secondary">Праздник</span></th>
+                <th scope="col"><span class="badge badge-secondary">Время</span></th>
+                <th scope="col"><span class="badge badge-secondary">Богослужение</span></th>
+                <th scope="col"><span class="badge badge-secondary">Тип</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{int дата_предыдущего = 0; }
+            @foreach (var str in schedule)
+            {
+                if (дата_предыдущего == str.date_and_time.Day)
+                {
+                    <Schedule_string2_create schedule_string="str"></Schedule_string2_create>
+                }
+                else
+                {
+                    <Schedule_string_create schedule_string="str"></Schedule_string_create>
+                    дата_предыдущего = str.date_and_time.Day;
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+
+@code {
+    [Parameter]
+    public List<schedule_string> schedule { get; set; }
+}

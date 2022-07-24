@@ -1,0 +1,12 @@
+﻿<div class="btn-group btn-group-sm mr-1 mb-1">
+    <div class="bg-light text-dark rounded-left pl-2 pt-1 pr-2 pb-1 text-nowrap" style="cursor:default;">@tag.name</div>
+    <button class="btn btn-sm btn-tertiary text-dark" @onclick="убрать"><i class="fas fa-times"></i></button>
+</div>
+
+@code {
+    [Parameter]
+    public tag tag { get; set; } = new tag();
+
+    [Parameter]
+    public EventCallback убрать{ get; set; }
+}

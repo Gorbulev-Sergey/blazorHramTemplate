@@ -1,0 +1,81 @@
+﻿@page "/photos/{id:int}"
+@page "/photos/details/{id:int}"
+@inject PhotosService PhotosService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Фотографии</PageTitle>
+
+@*Кнопка закрыть окно*@
+<button type="button" class="close text-dark rounded p-2 m-2 position-absolute" style="z-index:10; right:0; top:0" @onclick="closeWindow">
+    <i class="fas fa-times"></i>
+</button>
+
+@if (album != null)
+{
+    <div class="bg-light text-dark">
+        <div id="carousel" class="carousel slide" data-interval="0">
+            <ol class="carousel-indicators">
+                <li class="bg-dark active" data-target="#carousel" data-slide-to="0"></li>
+                @for (int i = 1; i < album.images.Count; i++)
+                {
+                    <li class="bg-dark" data-target="#carousel" data-slide-to="i"></li>
+                }
+            </ol>
+            <div class="carousel-inner">
+                @foreach (var photo in album.images)
+                {
+                    if (photo == album.images.ElementAt(0))
+                    {
+                        <div class="carousel-item text-center align-middle active" style="height:100vh">
+                            <img src="@photo.url" class="vh-100 position-absolute" style="top:50%; left:50%; transform: translate(-50%, -50%);" onload='if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)??window.innerHeight > window.innerWidth) {$(this).removeClass("vh-100").addClass("vw-100");}'>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="carousel-item text-center align-middle" style="height:100vh">
+                            <img src="@photo.url" class="vh-100 position-absolute" style="top:50%; left:50%; transform: translate(-50%, -50%);" onload='if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)??window.innerHeight > window.innerWidth) {$(this).removeClass("vh-100").addClass("vw-100");}'>
+                        </div>
+                    }
+                }
+            </div>
+            <a class="carousel-control-prev" style="height:100vh;" href="#carousel" role="button" data-slide="prev">
+                <div class="text-dark rounded pl-4 pt-5 pr-4 pb-5" style="font-size:1.8em;" title="Назад"><i class="fas fa-chevron-left"></i></div>
+                <span class="sr-only">Предыдущий</span>
+            </a>
+            <a class="carousel-control-next" style="height:100vh;" href="#carousel" role="button" data-slide="next">
+                <div class="text-dark rounded pl-4 pt-5 pr-4 pb-5" style="font-size:1.8em;" title="Вперёд"><i class="fas fa-chevron-right"></i></div>
+                <span class="sr-only">Следующий</span>
+            </a>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+    string backurl;
+    imageAlbum album { get; set; } = new imageAlbum();
+    private DotNetObjectReference<AlbumDetails>? objRef;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        album = PhotosService.itemById(id);
+        backurl = System.Web.HttpUtility.ParseQueryString(new Uri(NavigationManager.Uri).Query).Get("backurl");
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        JSRuntime.InvokeVoidAsync("enableFullScreen");
+    }
+
+    [JSInvokable]
+    public void closeWindow()
+    {
+        JSRuntime.InvokeVoidAsync("disableFullScreen");
+        
+        if (string.IsNullOrEmpty(backurl)) NavigationManager.NavigateTo("/photos");
+        else NavigationManager.NavigateTo(backurl);
+    }
+}

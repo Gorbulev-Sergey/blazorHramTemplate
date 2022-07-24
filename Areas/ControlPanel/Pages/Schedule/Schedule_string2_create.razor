@@ -1,0 +1,69 @@
+﻿@using System.Globalization
+
+<tr class="@цвет_фона">
+    <th scope="row" width="45%"><input class="form-control border-0 bg-transparent text-dark" @bind="@schedule_string.description" /></th>
+    <th scope="row" width="10%">
+        @if (время.ToShortTimeString() == "0:00")
+        {
+            if (schedule_string.date_and_time.DayOfWeek == DayOfWeek.Sunday)
+            {
+                <input type="time" class="form-control border-0 font-weight-bold bg-transparent text-tertiary" @bind="время" />
+            }
+            else
+            {
+                <input type="time" class="form-control border-0 font-weight-bold bg-transparent text-light" @bind="время" />
+            }
+        }
+        else
+        {
+            <input type="time" class="form-control border-0 bg-transparent text-dark" @bind="время" />
+        }
+    </th>
+    <th scope="row" width="20%">
+        <select class="form-control border-0 bg-transparent text-dark" @bind="schedule_string.prayer" title="Тип публикации">
+            @foreach (var t in type.GetNames(typeof(тип_службы)).ToList())
+            {
+                <option class="bg-light text-dark" value="@t">@schedule_string.GetDescription(Enum.Parse<тип_службы>(t))</option>
+            }
+        </select>
+    </th>
+    <th scope="row" width="10%">
+        <select class="form-control border-0 bg-transparent text-dark" @bind="schedule_string.тип_праздника" title="Тип публикации">
+            @foreach (var t in type.GetNames(typeof(тип_праздника)).ToList())
+            {
+                <option class="bg-light text-dark" value="@t">@schedule_string.GetDescription(Enum.Parse<тип_праздника>(t))</option>
+            }
+        </select>
+    </th>
+</tr>
+
+
+
+@code {
+    [Parameter]
+    public schedule_string schedule_string { get; set; }
+
+    string цвет_фона;
+
+    public DateTime время
+    {
+        get {
+            return DateTime.Parse(schedule_string.date_and_time.ToShortTimeString());
+        }
+        set
+        {
+            schedule_string.date_and_time = DateTime.Parse(String.Format("{0} {1}", schedule_string.date_and_time.ToShortDateString(), value.ToShortTimeString()));
+        }
+    }
+    protected override void OnParametersSet()
+    {
+        if (schedule_string.date_and_time.DayOfWeek==DayOfWeek.Sunday)
+        {
+            цвет_фона = "bg-tertiary";
+        }
+        else
+        {
+            цвет_фона = "bg-light";
+        }
+    }
+}

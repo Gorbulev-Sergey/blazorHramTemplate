@@ -1,0 +1,39 @@
+﻿@layout blazorHramTemplate2.Pages.Shared.AndroidLayout
+@page "/android"
+@page "/android/posts"
+@page "/android/posts/{Tag?}"
+@using Microsoft.AspNetCore.Components.Web
+@using blazorHramTemplate2.Areas.Android.Pages.Posts.Post
+@inject PostsService PostsService
+@inject NavigationManager NavigationManager
+
+<PageTitle>@(Tag.Substring(0,1).ToUpper() + Tag.Substring(1))</PageTitle>
+
+<div class="row mb-2 row-cols-1 row-cols-md-2 row-cols-xl-3 justify-content-start">
+    @foreach (var post in posts.Where(p => p.tags.Contains(p.tags.FirstOrDefault(t => t.name == Tag))))
+    {
+        <Post post="post" backurl=@NavigationManager.Uri.Replace(NavigationManager.BaseUri, "") />
+    }
+</div>
+
+@if (PostsService.canNext)
+{  
+    <button class="btn btn-light text-dark w-100" @onclick="()=> { posts = null; posts = nextPosts(tag: Tag); }">Загрузить ещё</button>  
+}
+
+
+@code {
+    [Parameter] public string Tag { get; set; }
+    List<post> posts = new List<post>();
+
+    List<post> nextPosts(string tag)
+    {
+        return PostsService.getNext(tag: tag).OrderBy(p => p.created).Where(p => p.published == true).Reverse().ToList();
+    }
+
+    protected override void OnParametersSet()
+    {
+        Tag = Tag ?? "объявления";
+        posts = nextPosts(tag: Tag);
+    }
+}

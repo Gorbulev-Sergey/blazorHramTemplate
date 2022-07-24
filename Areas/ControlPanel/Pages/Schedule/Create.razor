@@ -1,0 +1,86 @@
+﻿@layout CPanelLayout
+@page "/cpanel/schedule/create"
+@attribute [Authorize(Roles = "администратор, редактор")]
+@inject ScheduleService SchedulesService
+@inject NavigationManager NavigationManager
+
+
+<h3 class="mb-3 text-dark">Редактировать расписание</h3>
+
+<div class="d-flex justify-content-between mb-3">
+    <div>
+        <input id="select_date" type="month" class="btn btn-light text-dark" placeholder="месяц" @bind="месяц_и_год_расписания" title="Выберите дату" />
+    </div>
+    <div class="text-right">
+        <button class="btn btn-tertiary text-dark mb-1 mb-sm-0" @onclick="()=>сохранить_данные()">Сохранить</button>
+        <a class="btn btn-secondary text-dark" href="/cpanel/schedule">Отмена</a>
+    </div>
+</div>
+
+
+<Schedule_create schedule="schedule" />
+
+
+
+@code {
+    DateTime _месяц_и_год_расписания;
+    DateTime месяц_и_год_расписания
+    {
+        get
+        {
+            return _месяц_и_год_расписания;
+        }
+        set
+        {
+            schedule = null;
+            schedule = new List<schedule_string>();
+            _месяц_и_год_расписания = value;
+            получение_данных();
+        }
+    }
+
+    List<schedule_string> schedule = new List<schedule_string>();
+
+    protected override void OnParametersSet()
+    {
+        месяц_и_год_расписания = DateTime.Now;
+    }
+
+    void получение_данных()
+    {
+        // Получаем данные из бд
+        var schedule_db = SchedulesService.schedule(месяц_и_год_расписания);
+
+
+        // Заполняем месяц данными
+        for (int i = 1; i <= DateTime.DaysInMonth(_месяц_и_год_расписания.Year, _месяц_и_год_расписания.Month); i++)
+        {
+            var small_list = schedule_db.Where(s => s.date_and_time.Year == _месяц_и_год_расписания.Year && s.date_and_time.Month == _месяц_и_год_расписания.Month && s.date_and_time.Day == i);
+
+            switch (small_list.Count())
+            {
+                case 0:
+                    // вставляем пустую строку дважды
+                    schedule.Add(new schedule_string { date_and_time = new DateTime(месяц_и_год_расписания.Year, месяц_и_год_расписания.Month, i) });
+                    schedule.Add(new schedule_string { date_and_time = new DateTime(месяц_и_год_расписания.Year, месяц_и_год_расписания.Month, i) });
+                    break;
+                case 1:
+                    // Если есть 1 строка из бд на этот день, то подставляем eё, и добавляем вторую пустую строку
+                    schedule.Add(schedule_db.First(s => s.date_and_time.Day == i));
+                    schedule.Add(new schedule_string { date_and_time = new DateTime(месяц_и_год_расписания.Year, месяц_и_год_расписания.Month, i) });
+                    break;
+                case 2:
+                    // Если есть 2 строки из бд на этот день, то подставляем их
+                    schedule.Add(schedule_db.First(s => s.date_and_time.Day == i));
+                    schedule.Add(schedule_db.Last(s => s.date_and_time.Day == i));
+                    break;
+            }
+        }
+    }
+
+    async Task сохранить_данные()
+    {
+        await SchedulesService.update_or_create(schedule);
+        NavigationManager.NavigateTo("/cpanel/schedule", true);
+    }
+}

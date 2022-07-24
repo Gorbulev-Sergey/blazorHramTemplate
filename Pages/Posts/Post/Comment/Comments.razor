@@ -1,0 +1,32 @@
+﻿<div class="bg-light text-dark rounded-bottom p-3">
+    <AuthorizeView>
+        <Authorized>
+            <CreateComment добавить="(text)=>добавить.InvokeAsync(text)"></CreateComment>
+        </Authorized>
+        <NotAuthorized>
+            <div class="text-center">Пройдите <a href="/Identity/Account/Register?ReturnUrl=/posts/details/@postId">регистрацию</a> на нашем сайте и оставьте свой комментарий.</div>
+        </NotAuthorized>
+    </AuthorizeView>
+
+    @foreach (var comment in comments.Reverse<comment>())
+    {
+        <Comment comment="comment" удалить="comment=>удалить.InvokeAsync(comment)" userName="@userName"></Comment>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int postId{ get; set; }
+
+    [Parameter]
+    public string userName { get; set; }
+
+    [Parameter]
+    public List<comment> comments { get; set; }
+
+    [Parameter]
+    public EventCallback<string> добавить { get; set; }
+
+    [Parameter]
+    public EventCallback<comment> удалить { get; set; }
+}

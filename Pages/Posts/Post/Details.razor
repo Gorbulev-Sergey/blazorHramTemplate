@@ -1,0 +1,99 @@
+﻿@layout HomeLayout
+@page "/posts/details/{id:int}"
+@inject PostsService PostsService
+@inject CommentsService CommentsService
+@inject ViewBagService ViewBagService  
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<user> UserManager
+@inject NavigationManager Navigation
+
+
+<div class="card bg-light text-dark border-0">
+    <div class="card-header bg-light text-dark d-flex align-items-center justify-content-between border-0">
+        <div class="d-flex align-items-center">
+            <button class="btn btn-light bg-transparent" @onclick="назад" title="Вернуться назад"><i class="fas fa-chevron-left"></i></button>
+            <h4 class="card-title ml-3 mb-0 mr-3">@post.title</h4>            
+        </div>
+        <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center mr-2">
+                @foreach (var tag in post.tags)
+                {
+                    <a class="badge badge-tertiary text-dark p-1 ml-1" href="/posts/@tag.name">@tag.name</a>
+                }
+            </div>
+            <div class="small text-danger">@post.created.ToRus()</div>
+        </div>        
+    </div>
+    
+    <div class="card-body">
+        @if (String.IsNullOrEmpty(post.content))
+        {
+            @((MarkupString)post.description)
+        }
+        else
+        {
+            @((MarkupString)post.content)
+        }
+    </div>
+    @if (String.IsNullOrEmpty(post.content) && !String.IsNullOrEmpty(post.cover_image))
+    {
+        <img src="@post.cover_image" class="img-fluid">
+    }
+    <div class="card-footer bg-light text-dark border-0">
+        <div class=" d-flex align-items-center justify-content-between">
+            <button class="btn btn-light text-dark" @onclick="назад" title="Вернуться назад"><i class="fas fa-chevron-left mr-2"></i>Назад</button>
+            <div id="commentbtn">
+                <button class="btn btn-light text-dark" data-toggle="collapse" data-target="#comments" title="Комментарии"><i class="far fa-comment-alt"></i>@{if (post.comments.Count() > 0)
+                    {<span class="ml-2">@post.comments.Count()</span> } }</button>
+            </div>
+        </div>
+    </div>
+    <div id="comments" class="collapse">
+        <blazorHramTemplate2.Pages.Posts.Post.Comment.Comments userName="@user.UserName" postId="id" comments="post.comments.ToList()" добавить="text=> добавитьКомментарий((string)text)" удалить="comment=>удалитьКомментарий((comment)comment)"></blazorHramTemplate2.Pages.Posts.Post.Comment.Comments>
+    </div>
+</div>
+
+
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+    post post = new post();
+    user user = new user();
+    string backurl;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        post = await PostsService.itemByIdAsync(id);
+        user = await userIdentity();
+        backurl = System.Web.HttpUtility.ParseQueryString(new Uri(Navigation.Uri).Query).Get("backurl");
+    }
+
+    void назад()
+    {
+        Navigation.NavigateTo(backurl);
+    }
+
+    void добавитьКомментарий(string text)
+    {
+        CommentsService.add(new comment { postID = post.ID, text = text, userId = user.Id, userName = user.UserName });
+        post = PostsService.itemById(id);
+    }
+
+    void удалитьКомментарий(comment comment)
+    {
+        CommentsService.delete(comment);
+        post.comments.Remove(comment);
+    }
+
+    async Task<user> userIdentity()
+    {
+        var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        if (state.User.Identity.IsAuthenticated)
+        {
+            return await UserManager.FindByNameAsync(state.User.Identity.Name);
+        }
+        else return new user();
+    }
+}

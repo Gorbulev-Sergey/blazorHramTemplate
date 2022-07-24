@@ -1,0 +1,99 @@
+﻿@layout CPanelLayout
+@page "/cpanel/schedule"
+@attribute [Authorize(Roles = "администратор, редактор")]
+@inject ScheduleService SchedulesService
+
+@if (естьРасписаиниеНаТекущийМесяц)
+{
+    if (естьРасписаиниеНаСледующийМесяц)
+    {
+        <div class="d-flex justify-content-between align-items-center mb-4 print-table-header">
+            <h3 class="text-dark text-center">Расписание богослужений на @CultureInfo.GetCultureInfo("ru-RU").DateTimeFormat.GetMonthName(nextDate.Month).ToLower() @nextDate.Year года</h3>
+            <div class="d-flex flex-column flex-sm-row" style="gap:.25em">
+                <button class="btn btn-tertiary text-dark no-print" onclick="window.print(); return false;"><i class="fas fa-print" title="Печать"></i></button>
+                <a class="btn btn-tertiary text-dark no-print" href="/cpanel/schedule/create"><i class="fas fa-pencil-alt" title="Редактировать расписание"></i></a>
+            </div>
+        </div>
+        <blazorHramTemplate2.Pages.Schedule.Schedule.Schedule date="nextDate" />
+        <br />
+        <br />
+    }
+<div class="d-flex justify-content-between align-items-center mb-4 print-table-header">
+    <h3 class="text-dark text-center">Расписание богослужений на @CultureInfo.GetCultureInfo("ru-RU").DateTimeFormat.GetMonthName(DateTime.Now.Month).ToLower() @DateTime.Now.Year года</h3>
+    <div class="d-flex flex-column flex-sm-row" style="gap:.25em">
+        <button class="btn btn-tertiary text-dark no-print" onclick="window.print(); return false;"><i class="fas fa-print" title="Печать"></i></button>
+        <a class="btn btn-tertiary text-dark no-print" href="/cpanel/schedule/create"><i class="fas fa-pencil-alt" title="Редактировать расписание"></i></a>
+    </div>
+</div>
+    <blazorHramTemplate2.Pages.Schedule.Schedule.Schedule date="DateTime.Now" />
+}
+else if (естьРасписаиниеНаПредыдущийМесяц)
+{
+<div class="d-flex justify-content-between align-items-center mb-4 print-table-header">
+    <h3 class="text-dark text-center">Расписание богослужений на @CultureInfo.GetCultureInfo("ru-RU").DateTimeFormat.GetMonthName(prevDate.Month).ToLower() @prevDate.Year года</h3>
+    <div class="d-flex flex-column flex-sm-row" style="gap:.25em">
+        <button class="btn btn-tertiary text-dark no-print" onclick="window.print(); return false;"><i class="fas fa-print" title="Печать"></i></button>
+        <a class="btn btn-tertiary text-dark no-print" href="/cpanel/schedule/create"><i class="fas fa-pencil-alt" title="Редактировать расписание"></i></a>
+    </div>
+</div>
+    <blazorHramTemplate2.Pages.Schedule.Schedule.Schedule date="prevDate" />
+}
+else
+{
+<div class="d-flex justify-content-between align-items-center">
+    <div class="alert alert-info"><b>Расписание на данный момент отсутствует</b></div>
+    <a class="btn btn-tertiary text-dark" href="/cpanel/schedule/create"><i class="fas fa-pencil-alt" title="Редактировать расписание"></i></a>
+</div>
+}
+
+
+
+
+
+@code {
+    bool естьРасписаиниеНаТекущийМесяц = false;
+    bool естьРасписаиниеНаСледующийМесяц = false;
+    bool естьРасписаиниеНаПредыдущийМесяц = false;
+    DateTime nextDate;
+    DateTime prevDate;
+
+    protected override void OnInitialized()
+    {
+        // Текущий месяц
+        if (SchedulesService.has_schedule_in_this_date(DateTime.Now)) естьРасписаиниеНаТекущийМесяц = true;
+        // Следующий месяц
+        if (DateTime.Now.Month != 12)
+        {
+            nextDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month + 1, 1);
+            if (SchedulesService.has_schedule_in_this_date(nextDate))
+            {
+                естьРасписаиниеНаСледующийМесяц = true;
+            }
+        }
+        else
+        {
+            nextDate = new DateTime(DateTime.Now.Year + 1, 1, 1);
+            if (SchedulesService.has_schedule_in_this_date(nextDate))
+            {
+                естьРасписаиниеНаСледующийМесяц = true;
+            }
+        }
+        // Предыдущий месяц
+        if (DateTime.Now.Month != 1)
+        {
+            prevDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month - 1, 1);
+            if (SchedulesService.has_schedule_in_this_date(prevDate))
+            {
+                естьРасписаиниеНаПредыдущийМесяц = true;
+            }
+        }
+        else
+        {
+            prevDate = new DateTime(DateTime.Now.Year - 1, 12, 1);
+            if (SchedulesService.has_schedule_in_this_date(prevDate))
+            {
+                естьРасписаиниеНаПредыдущийМесяц = true;
+            }
+        }
+    }
+}

@@ -1,0 +1,78 @@
+﻿@layout blazorHramTemplate2.Pages.Shared.AndroidLayout
+@page "/android/schedule"
+@inject ScheduleService SchedulesService
+
+<PageTitle>Расписание богослужений</PageTitle>
+
+@if (естьРасписаиниеНаТекущийМесяц)
+{
+    if (естьРасписаиниеНаСледующийМесяц)
+    {
+        <blazorHramBabynino.Pages.Schedule.Schedule.Schedule date="nextDate" />
+        <br />
+        <br />
+    }
+    <blazorHramBabynino.Pages.Schedule.Schedule.Schedule date="DateTime.Now" />
+}
+else if (естьРасписаиниеНаПредыдущийМесяц)
+{
+    <blazorHramBabynino.Pages.Schedule.Schedule.Schedule date="prevDate" />
+}
+else
+{
+    <div class="d-flex justify-content-center align-items-center">
+        <div class="alert alert-info"><b>Расписание на данный момент отсутствует</b></div>
+    </div>
+}
+
+
+
+
+
+@code {
+    bool естьРасписаиниеНаТекущийМесяц = false;
+    bool естьРасписаиниеНаСледующийМесяц = false;
+    bool естьРасписаиниеНаПредыдущийМесяц = false;
+    DateTime nextDate;
+    DateTime prevDate;
+
+    protected override void OnInitialized()
+    {
+        // Текущий месяц
+        if (SchedulesService.has_schedule_in_this_date(DateTime.Now)) естьРасписаиниеНаТекущийМесяц = true;
+        // Следующий месяц
+        if (DateTime.Now.Month != 12)
+        {
+            nextDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month + 1, 1);
+            if (SchedulesService.has_schedule_in_this_date(nextDate))
+            {
+                естьРасписаиниеНаСледующийМесяц = true;
+            }
+        }
+        else
+        {
+            nextDate = new DateTime(DateTime.Now.Year + 1, 1, 1);
+            if (SchedulesService.has_schedule_in_this_date(nextDate))
+            {
+                естьРасписаиниеНаСледующийМесяц = true;
+            }
+        }
+        // Предыдущий месяц
+        if (DateTime.Now.Month != 1)
+        {
+            prevDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month - 1, 1);
+            if (SchedulesService.has_schedule_in_this_date(prevDate))
+            {
+                естьРасписаиниеНаПредыдущийМесяц = true;
+            }
+        }
+        else
+        {
+            prevDate = new DateTime(DateTime.Now.Year - 1, 12, 1);
+            if (SchedulesService.has_schedule_in_this_date(prevDate))
+            {
+                естьРасписаиниеНаПредыдущийМесяц = true;
+            }
+        }
+    }
+}

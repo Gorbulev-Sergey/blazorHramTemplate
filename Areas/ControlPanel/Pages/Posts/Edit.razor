@@ -1,0 +1,109 @@
+﻿@layout CPanelLayout
+@page "/cpanel/posts/edit/{id:int}"
+@attribute [Authorize(Roles = "администратор, редактор")]
+@inject PostsService PostsService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+<h3 class="mb-3 text-dark">Редактировать публикацию</h3>
+
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    @*Заголовок страницы*@
+    <div class="nav nav-pills">
+        <a class="btn btn-secondary mr-1 mb-1 mb-sm-0 active" id="list-home-list" data-toggle="pill" href="#list-home">Обложка</a>
+        <a class="btn btn-secondary" id="list-content-list" data-toggle="pill" href="#list-content">Содержимое</a>
+    </div>
+    @*Кнопки сохранения и отмены*@
+    <div class="form-group mb-0 text-right">
+        <button class="btn btn-tertiary text-dark mb-1 mb-sm-0" @onclick="()=>сохранить()">Сохранить</button>
+        <a class="btn btn-secondary" href="/cpanel/posts">Отмена</a>
+    </div>
+</div>
+
+<div class="tab-content" id="nav-tabContent">
+    @*Обложка публикации*@
+    <div class="tab-pane fade show active" id="list-home">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <input @bind="post.title" class="form-control border-0 bg-light text-dark" placeholder="Название" />
+                </div>
+                <div class="form-group">
+                    <textarea @bind="post.description" rows="4" class="form-control border-0  bg-light text-dark" placeholder="Краткое описание" />
+                </div>
+                <div class="form-group d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <input id="publish" class="bg-dark text-light" type="checkbox" value="false" @bind="post.published" />
+                        <label for="publish" class="ml-1 mb-0 text-dark">Опубликовать</label>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="mr-1 text-dark">Дата публикации:</div>
+                        <input type="date" class="btn btn-light text-dark border-0" placeholder="месяц" @bind="post.created" title="Выберите дату" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <blazorHramTemplate2.Areas.ControlPanel.Pages.Tags.Tag.TagsSearcher addedTags="post.tags"></blazorHramTemplate2.Areas.ControlPanel.Pages.Tags.Tag.TagsSearcher>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input @bind-value="post.cover_image" @bind-value:event="oninput" class="form-control border-0 bg-light text-dark" placeholder="Обложка (url картинки)" />
+                    @if (!String.IsNullOrEmpty(post.cover_image))
+                    {
+                        <img class="card-img mt-3" src="@post.cover_image" />
+                    }
+                </div>
+                <div class="form-group">
+                    <input @bind-value="post.cover_video" @bind-value:event="oninput" class="form-control border-0 bg-light text-dark" placeholder="Обложка (url видео)" />
+                    @if (!String.IsNullOrEmpty(post.cover_video))
+                    {
+                        <div class="embed-responsive embed-responsive-16by9 mt-3">
+                            <iframe class="embed-responsive-item" src='@post.cover_video.Replace("youtu.be","youtube.com/embed")?rel=0' frameborder="0" allowfullscreen></iframe>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Содержимое публикации*@
+    <div class="tab-pane fade" id="list-content">
+        <div class="form-group">
+            <Editor></Editor>
+        </div>
+        <div class="form-group">
+            <div id="editor" class="form-control h-auto border-0 bg-light text-dark" style="min-height:300px" contenteditable="true">@((MarkupString)post.content)</div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    public post post = new post();
+    string тип_публикации
+    {
+        get
+        {
+            return post.type.ToString();
+        }
+        set
+        {
+            post.type = Enum.Parse<type>(value);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        post = await PostsService.itemByIdAsync(id);
+    }
+
+    async Task сохранить()
+    {
+        post.content = (await JSRuntime.InvokeAsync<string>("editor_html", "#editor"));
+        await PostsService.updateAsync(post);
+        NavigationManager.NavigateTo("/cpanel/posts", true);
+    }
+
+}

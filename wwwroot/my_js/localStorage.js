@@ -1,0 +1,11 @@
+﻿var setItem = (key, value) => {
+    localStorage.setItem(key, value);
+};
+
+var getItem = (key) => {
+    return localStorage.getItem(key);
+};
+
+var removeItem = (key) => {
+    localStorage.removeItem(key);
+};

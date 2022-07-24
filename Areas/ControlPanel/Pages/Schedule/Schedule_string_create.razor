@@ -1,0 +1,122 @@
+﻿@using System.Globalization
+
+
+<tr class="@цвет_фона">
+    <th scope="row" width="15%" rowspan="2"><div class="form-control border-0 font-weight-bold bg-transparent text-dark">@schedule_string.date_and_time.Day @schedule_string.date_and_time.ToRusMonth(), @CultureInfo.GetCultureInfo("ru-RU").DateTimeFormat.GetDayName(schedule_string.date_and_time.DayOfWeek)</div></th>
+    <th scope="row" width="45%"><input class="form-control border-0 bg-transparent text-dark h-auto @цвет_или_формат_праздника" @bind="@schedule_string.description" multiple /></th>
+    <th scope="row" width="10%">
+        @if (время.ToShortTimeString() == "0:00")
+        {
+            if (schedule_string.date_and_time.DayOfWeek == DayOfWeek.Sunday)
+            {
+                <input type="time" class="form-control border-0 font-weight-bold bg-transparent text-tertiary" @bind="время" />
+            }
+            else
+            {
+                <input type="time" class="form-control border-0 font-weight-bold bg-transparent text-light" @bind="время" />
+            }
+
+        }
+        else
+        {
+            <input type="time" class="form-control border-0 bg-transparent text-dark" @bind="время" />
+        }
+    </th>
+    <th scope="row" width="20%">
+        <select class="form-control border-0 bg-transparent text-dark" @bind="schedule_string.prayer" title="Тип публикации">
+            @foreach (var t in type.GetNames(typeof(тип_службы)).ToList())
+            {
+                <option class="bg-light text-dark" value="@t">@schedule_string.GetDescription(Enum.Parse<тип_службы>(t))</option>
+            }
+        </select>
+    </th>
+    <th scope="row" width="10%">
+        <select class="form-control border-0 bg-transparent text-dark" @bind="маркер_праздника" title="Тип публикации">
+            @foreach (var t in type.GetNames(typeof(тип_праздника)).ToList())
+            {
+                <option class="bg-light text-dark" value="@t">@schedule_string.GetDescription(Enum.Parse<тип_праздника>(t))</option>
+            }
+        </select>
+    </th>
+</tr>
+
+
+@code {
+    [Parameter]
+    public schedule_string schedule_string { get; set; }
+
+    string цвет_или_формат_праздника;
+    string цвет_фона;
+    string цвет_пустого_времени = "text-light";
+
+    тип_праздника маркер_праздника
+    {
+        get { return schedule_string.тип_праздника; }
+        set
+        {
+            switch (value)
+            {
+                case тип_праздника.пусто: цвет_или_формат_праздника = ""; break;
+                case тип_праздника.жирный: цвет_или_формат_праздника = "font-weight-bold"; break;
+                case тип_праздника.курсив: цвет_или_формат_праздника = "font-italic"; break;
+                case тип_праздника.жирный_заглавный: цвет_или_формат_праздника = "font-weight-bold text-uppercase"; break;
+
+                case тип_праздника.primary: цвет_или_формат_праздника = "text-primary" ; break;
+                case тип_праздника.success: цвет_или_формат_праздника = "text-success" ; break;
+                case тип_праздника.danger: цвет_или_формат_праздника = "text-danger" ; break;
+                case тип_праздника.warning: цвет_или_формат_праздника = "text-warning" ; break;
+                case тип_праздника.info: цвет_или_формат_праздника = "text-info" ; break;
+                case тип_праздника.light: цвет_или_формат_праздника = "text-light" ; break;
+                case тип_праздника.secondary: цвет_или_формат_праздника = "text-secondary" ; break;
+
+                case тип_праздника.primary_cursive: цвет_или_формат_праздника = "text-primary font-italic" ; break;
+                case тип_праздника.success_cursive: цвет_или_формат_праздника = "text-success font-italic" ; break;
+                case тип_праздника.danger_cursive: цвет_или_формат_праздника = "text-danger font-italic" ; break;
+                case тип_праздника.warning_cursive: цвет_или_формат_праздника = "text-warning font-italic" ; break;
+                case тип_праздника.info_cursive: цвет_или_формат_праздника = "text-info font-italic" ; break;
+                case тип_праздника.light_cursive: цвет_или_формат_праздника = "text-light font-italic" ; break;
+                case тип_праздника.secondary_cursive: цвет_или_формат_праздника = "text-secondary font-italic" ; break;
+
+                case тип_праздника.primary_bold: цвет_или_формат_праздника = "text-primary font-weight-bold" ; break;
+                case тип_праздника.success_bold: цвет_или_формат_праздника = "text-success font-weight-bold" ; break;
+                case тип_праздника.danger_bold: цвет_или_формат_праздника = "text-danger font-weight-bold" ; break;
+                case тип_праздника.warning_bold: цвет_или_формат_праздника = "text-warning font-weight-bold" ; break;
+                case тип_праздника.info_bold: цвет_или_формат_праздника = "text-info font-weight-bold" ; break;
+                case тип_праздника.light_bold: цвет_или_формат_праздника = "text-light font-weight-bold" ; break;
+                case тип_праздника.secondary_bold: цвет_или_формат_праздника = "text-secondary font-weight-bold" ; break;
+
+                case тип_праздника.primary_bold_up: цвет_или_формат_праздника = "text-primary font-weight-bold text-uppercase" ; break;
+                case тип_праздника.success_bold_up: цвет_или_формат_праздника = "text-success font-weight-bold text-uppercase" ; break;
+                case тип_праздника.danger_bold_up: цвет_или_формат_праздника = "text-danger font-weight-bold text-uppercase" ; break;
+                case тип_праздника.warning_bold_up: цвет_или_формат_праздника = "text-warning font-weight-bold text-uppercase" ; break;
+                case тип_праздника.info_bold_up: цвет_или_формат_праздника = "text-info font-weight-bold text-uppercase" ; break;
+                case тип_праздника.light_bold_up: цвет_или_формат_праздника = "text-light font-weight-bold text-uppercase" ; break;
+                case тип_праздника.secondary_bold_up: цвет_или_формат_праздника = "text-secondary font-weight-bold text-uppercase" ; break;
+            }
+            schedule_string.тип_праздника = value;
+        }
+    }
+    public DateTime время
+    {
+        get
+        {
+            return DateTime.Parse(schedule_string.date_and_time.ToShortTimeString());
+        }
+        set
+        {
+            schedule_string.date_and_time = DateTime.Parse(String.Format("{0} {1}", schedule_string.date_and_time.ToShortDateString(), value.ToShortTimeString()));
+        }
+    }
+    protected override void OnParametersSet()
+    {
+        if (schedule_string.date_and_time.DayOfWeek == DayOfWeek.Sunday)
+        {
+            цвет_фона = "bg-tertiary";
+        }
+        else
+        {
+            цвет_фона = "bg-light";
+        }
+        маркер_праздника = schedule_string.тип_праздника;
+    }
+}

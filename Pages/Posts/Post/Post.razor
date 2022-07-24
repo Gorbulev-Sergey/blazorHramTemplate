@@ -1,0 +1,56 @@
+﻿@inject NavigationManager NavigationManager
+
+<div class="col mb-4">
+    <div class="card bg-light text-dark h-100 border-0">
+        <div class="card-header bg-light text-dark border-0">
+            <h5 class="card-title">@((MarkupString)post.title)</h5>
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="small text-danger">@post.created.ToRus()</div>
+                <div>
+                    @foreach (var tag in post.tags)
+                    {
+                        <a class="badge badge-tertiary text-dark p-1 ml-1" href="/posts/@tag.name">@tag.name</a>
+                    }
+                </div>                
+            </div>            
+        </div>
+        @if (!String.IsNullOrEmpty(post.cover_video))
+        {
+            <div class="embed-responsive embed-responsive-16by9">
+                <iframe class="embed-responsive-item" src='@post.cover_video.Replace("youtu.be","youtube.com/embed")?rel=0' frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        }
+        else if (!String.IsNullOrEmpty(post.cover_image))
+        {
+            <div class="img-fluid" style="background:url(@post.cover_image); background-size:cover; height:220px"></div>
+            <img src="@post.cover_image" class="img-fluid" hidden>
+        }
+        <div class="card-body" style="font-size:1em">
+            <p class="card-text">@((MarkupString)post.description)</p>
+        </div>
+        @if (!String.IsNullOrEmpty(post.content))
+        {
+            <div class="card-footer bg-light text-dark border-0">
+                <div class="d-flex align-items-center justify-content-between">
+                    <button class="btn btn-sm btn-light text-dark" @onclick="()=>подробнее(post.ID)">Подробнее<i class="fas fa-chevron-right ml-2"></i></button>
+                    <div>
+                        <button class="btn btn-light text-dark" data-toggle="collapse" data-target="#comments" title="Комментарии" @onclick='()=>подробнее(post.ID)'>
+                            <i class="far fa-comment-alt"></i>@{if (post.comments.Count() > 0)
+                                {<span class="ml-2">@post.comments.Count()</span> } }
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public post post { get; set; }
+
+    void подробнее(int id)
+    {
+        NavigationManager.NavigateTo($"/posts/details/{id}?backurl=/{NavigationManager.Uri.Replace(NavigationManager.BaseUri, string.Empty)}");
+    }
+}

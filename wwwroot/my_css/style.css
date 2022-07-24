@@ -1,0 +1,20 @@
+﻿body > a{
+    visibility:hidden;
+}
+
+/*Уменьшаем размер заголовка сайта для маленьких смартфонов*/
+.site-title {
+    font-size: 1.25em !important;
+}
+
+@media (max-width: 500px) {
+    .site-title {
+        font-size: .88em !important;
+    }
+}
+
+@media (max-width: 310px) and (min-width: 0) {
+    .site-title {
+        font-size: .8em !important;
+    }
+}

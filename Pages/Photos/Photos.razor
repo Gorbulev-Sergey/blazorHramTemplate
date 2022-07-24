@@ -1,0 +1,36 @@
+﻿@layout HomeLayout
+@page "/photos"
+@inject PhotosService PhotosService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Фотографии</PageTitle>
+
+<h3 class="mb-3 text-dark">Фотографии</h3>
+
+@if (albums.Count > 0)
+{
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-2">
+        @foreach (var album in albums.OrderByDescending(d => d.created))
+        {
+            <Album album="album" onclick='()=>NavigationManager.NavigateTo("/photos/"+album.ID)'></Album>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-info mt-3"><b>Фотографии на данный момент отсутствуют</b></div>
+}
+
+
+
+
+@code {
+    public List<imageAlbum> albums = new List<imageAlbum>();
+    imageAlbum selectedAlbum = new imageAlbum();
+
+    protected override async Task OnInitializedAsync()
+    {
+        albums = await PhotosService.getAsync();
+    }
+}
